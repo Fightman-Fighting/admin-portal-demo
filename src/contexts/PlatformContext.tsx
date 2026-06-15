@@ -159,7 +159,7 @@ export const PlatformProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       }
       return cur;
     });
-    pushNotification({ orgId, type: 'billing', title: 'Payment succeeded', body: 'Checkout completed — subscription is now active.', severity: 'low' });
+    pushNotification({ orgId, type: 'billing', title: 'Payment succeeded', body: 'Checkout completed - subscription is now active.', severity: 'low' });
   }, [pushNotification]);
 
   const simulateRenewal = useCallback((orgId: string) => {

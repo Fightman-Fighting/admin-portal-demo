@@ -39,7 +39,7 @@ const AuthScreen: React.FC = () => {
         </div>
         <div className="relative max-w-md space-y-6">
           <h1 className="text-4xl font-bold leading-tight">The accountability platform for high-performing teams.</h1>
-          <p className="text-slate-400">Real-time activity monitoring, AI productivity insights, and a multi-tenant control plane — all in one command center.</p>
+          <p className="text-slate-400">Real-time activity monitoring, AI productivity insights, and a multi-tenant control plane - all in one command center.</p>
           <div className="grid grid-cols-3 gap-4 pt-4">
             {[['6', 'Organizations'], ['142', 'Active users'], ['99.9%', 'Uptime']].map(([n, l]) => (
               <div key={l}><div className="text-2xl font-bold text-cyan-300">{n}</div><div className="text-xs text-slate-500">{l}</div></div>

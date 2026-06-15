@@ -25,7 +25,7 @@ const UsersPage: React.FC<{ orgId: string }> = ({ orgId }) => {
 
       {invited.length > 0 && (
         <div className="rounded-lg bg-emerald-500/10 border border-emerald-500/20 px-4 py-2.5 text-sm text-emerald-600 dark:text-emerald-400">
-          Invitation sent to {invited.join(', ')} — pending acceptance.
+          Invitation sent to {invited.join(', ')} - pending acceptance.
         </div>
       )}
 
@@ -46,9 +46,9 @@ const UsersPage: React.FC<{ orgId: string }> = ({ orgId }) => {
                   <div className="flex items-center gap-2">
                     <div className="w-20 h-2 rounded-full bg-slate-100 dark:bg-white/10 overflow-hidden"><div className={`h-full rounded-full ${u.productivity > 70 ? 'bg-emerald-500' : u.productivity > 50 ? 'bg-amber-400' : 'bg-rose-500'}`} style={{ width: `${u.productivity}%` }} /></div>
                     <span className="text-xs text-slate-500">{u.productivity}</span>
-                  </div>) : <span className="text-xs text-slate-400">—</span>}
+                  </div>) : <span className="text-xs text-slate-400">-</span>}
                 </td>
-                <td className="py-3 text-xs text-slate-500">{u.id.startsWith('u_org') && partner ? partner.name : '—'}</td>
+                <td className="py-3 text-xs text-slate-500">{u.id.startsWith('u_org') && partner ? partner.name : '-'}</td>
               </tr>
             ))}
           </tbody>

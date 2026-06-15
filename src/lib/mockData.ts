@@ -129,7 +129,7 @@ export const assignments: Assignment[] = (() => {
 })();
 
 export const DEMO_ACCOUNTS = [
-  { label: 'Super Admin', email: 'super@platform.io', role: 'Platform owner — global access' },
-  { label: 'Org Admin', email: 'admin@novalabs.dev', role: 'Nova Labs — manage org' },
-  { label: 'Accountability Partner', email: 'partner@novalabs.dev', role: 'Nova Labs — monitor users' },
+  { label: 'Super Admin', email: 'super@platform.io', role: 'Platform owner - global access' },
+  { label: 'Org Admin', email: 'admin@novalabs.dev', role: 'Nova Labs - manage org' },
+  { label: 'Accountability Partner', email: 'partner@novalabs.dev', role: 'Nova Labs - monitor users' },
 ];

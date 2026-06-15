@@ -29,7 +29,7 @@ export const AlertsPage: React.FC<{ orgId: string }> = ({ orgId }) => {
             </div>
           </div>
         ))}
-        {alerts.length === 0 && <div className="px-5 py-12 text-center text-sm text-slate-400">No alerts — all users within policy.</div>}
+        {alerts.length === 0 && <div className="px-5 py-12 text-center text-sm text-slate-400">No alerts - all users within policy.</div>}
       </div>
     </Card>
   );
@@ -39,7 +39,7 @@ export const NotesPage: React.FC<{ orgId: string }> = ({ orgId }) => {
   const { allUsers, currentUser } = usePlatform();
   const members = allUsers.filter((u) => /^u_org_/.test(u.id) && u.orgId === orgId);
   const [notes, setNotes] = useState<{ id: string; user: string; text: string; ts: number; author: string }[]>([
-    { id: '1', user: members[0]?.name || '', text: 'Discussed afternoon focus dips — agreed to enable a 2pm social media block.', ts: Date.now() - 86400000, author: currentUser?.name || '' },
+    { id: '1', user: members[0]?.name || '', text: 'Discussed afternoon focus dips - agreed to enable a 2pm social media block.', ts: Date.now() - 86400000, author: currentUser?.name || '' },
   ]);
   const [sel, setSel] = useState(members[0]?.id);
   const [text, setText] = useState('');
@@ -69,7 +69,7 @@ export const NotesPage: React.FC<{ orgId: string }> = ({ orgId }) => {
           <Card key={n.id} className="p-4">
             <div className="flex items-center justify-between"><span className="font-medium text-slate-900 dark:text-white">{n.user}</span><span className="text-[11px] text-slate-400">{ago(n.ts)}</span></div>
             <p className="mt-1.5 text-sm text-slate-600 dark:text-slate-300">{n.text}</p>
-            <div className="mt-2 text-[11px] text-slate-400">— {n.author}</div>
+            <div className="mt-2 text-[11px] text-slate-400">- {n.author}</div>
           </Card>
         ))}
       </div>

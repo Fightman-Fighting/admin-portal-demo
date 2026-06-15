@@ -37,7 +37,7 @@ const AIInsights: React.FC<{ orgScope?: string }> = ({ orgScope }) => {
       if (data?.error) throw new Error(data.error);
       setResult(data);
     } catch (e: any) {
-      setErr('AI service unavailable — showing fallback analysis.');
+      setErr('AI service unavailable - showing fallback analysis.');
       const social = Math.round(((bdMin.social || 0) + (bdMin.entertainment || 0)) / (Object.values(bdMin).reduce((a, b) => a + b, 0) || 1) * 100);
       setResult({
         focusScore: user.productivity,
