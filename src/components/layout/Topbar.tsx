@@ -1,16 +1,27 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { usePlatform } from '@/contexts/PlatformContext';
+import { DEMO_ACCOUNTS } from '@/lib/mockData';
+import { DEFAULT_PAGE, pageToPath } from '@/lib/nav';
 import { ago } from '@/lib/ui';
-import { Menu, Search, Bell, Moon, Sun, Radio } from 'lucide-react';
+import { Menu, Search, Bell, Moon, Sun, Radio, Check } from 'lucide-react';
 
 const Topbar: React.FC<{ onMenu: () => void; title: string }> = ({ onMenu, title }) => {
-  const { currentUser, dark, toggleDark, notifications, markAllRead } = usePlatform();
+  const { currentUser, login, dark, toggleDark, notifications, markAllRead } = usePlatform();
+  const navigate = useNavigate();
   const [showNotifs, setShowNotifs] = useState(false);
+  const [showRoleMenu, setShowRoleMenu] = useState(false);
   if (!currentUser) return null;
   const scope = currentUser.role === 'SUPER_ADMIN' ? notifications : notifications.filter((n) => n.orgId === currentUser.orgId);
   const unread = scope.filter((n) => !n.read).length;
 
   const sev: Record<string, string> = { high: 'bg-rose-500', medium: 'bg-amber-400', low: 'bg-emerald-500' };
+
+  const switchRole = (email: string) => {
+    login(email, 'demo');
+    navigate(pageToPath(DEFAULT_PAGE));
+    setShowRoleMenu(false);
+  };
 
   return (
     <header className="sticky top-0 z-20 flex h-16 items-center gap-3 border-b border-slate-200 dark:border-white/10 bg-white/80 dark:bg-slate-950/80 px-4 backdrop-blur">
@@ -30,7 +41,7 @@ const Topbar: React.FC<{ onMenu: () => void; title: string }> = ({ onMenu, title
           {dark ? <Sun className="h-4.5 w-4.5" /> : <Moon className="h-4.5 w-4.5" />}
         </button>
         <div className="relative">
-          <button onClick={() => setShowNotifs((s) => !s)} className="relative grid h-9 w-9 place-items-center rounded-lg text-slate-500 hover:bg-slate-100 dark:hover:bg-white/5">
+          <button onClick={() => { setShowNotifs((s) => !s); setShowRoleMenu(false); }} className="relative grid h-9 w-9 place-items-center rounded-lg text-slate-500 hover:bg-slate-100 dark:hover:bg-white/5">
             <Bell className="h-4.5 w-4.5" />
             {unread > 0 && <span className="absolute -top-0.5 -right-0.5 grid h-4 min-w-4 px-1 place-items-center rounded-full bg-rose-500 text-[9px] font-bold text-white">{unread}</span>}
           </button>
@@ -56,7 +67,43 @@ const Topbar: React.FC<{ onMenu: () => void; title: string }> = ({ onMenu, title
             </div>
           )}
         </div>
-        <img src={currentUser.avatar} className="ml-1 h-9 w-9 rounded-full object-cover ring-2 ring-indigo-500/30" alt="" />
+        <div className="relative ml-1">
+          <button
+            type="button"
+            onClick={() => { setShowRoleMenu((s) => !s); setShowNotifs(false); }}
+            className="rounded-full ring-2 ring-indigo-500/30 hover:ring-indigo-500/50 transition-shadow"
+            aria-label="Switch demo role"
+          >
+            <img src={currentUser.avatar} className="h-9 w-9 rounded-full object-cover" alt="" />
+          </button>
+          {showRoleMenu && (
+            <div className="absolute right-0 mt-2 w-72 rounded-xl border border-slate-200 dark:border-white/10 bg-white dark:bg-slate-900 shadow-xl overflow-hidden">
+              <div className="border-b border-slate-200 dark:border-white/10 px-4 py-2.5">
+                <span className="text-sm font-semibold text-slate-900 dark:text-white">Switch demo role</span>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Preview the portal as another role</p>
+              </div>
+              <div className="p-2">
+                {DEMO_ACCOUNTS.map((account) => {
+                  const active = currentUser.email === account.email;
+                  return (
+                    <button
+                      key={account.email}
+                      type="button"
+                      onClick={() => switchRole(account.email)}
+                      className={`flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left transition-colors ${active ? 'bg-indigo-50 dark:bg-indigo-500/10' : 'hover:bg-slate-50 dark:hover:bg-white/5'}`}
+                    >
+                      <div className="min-w-0 flex-1">
+                        <div className="text-sm font-medium text-slate-900 dark:text-white">{account.label}</div>
+                        <div className="text-xs text-slate-500 dark:text-slate-400 truncate">{account.role}</div>
+                      </div>
+                      {active && <Check className="h-4 w-4 shrink-0 text-indigo-500" />}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+        </div>
       </div>
     </header>
   );

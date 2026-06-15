@@ -1,10 +1,12 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { usePlatform } from '@/contexts/PlatformContext';
 import { NAV, roleLabel } from '@/lib/nav';
 import { Activity, LogOut, X } from 'lucide-react';
 
-const Sidebar: React.FC<{ page: string; setPage: (p: string) => void; open: boolean; setOpen: (b: boolean) => void }> = ({ page, setPage, open, setOpen }) => {
+const Sidebar: React.FC<{ page: string; goto: (p: string) => void; open: boolean; setOpen: (b: boolean) => void }> = ({ page, goto, open, setOpen }) => {
   const { currentUser, logout, orgs } = usePlatform();
+  const navigate = useNavigate();
   if (!currentUser) return null;
   const items = NAV[currentUser.role];
   const sections = Array.from(new Set(items.map((i) => i.section)));
@@ -15,10 +17,15 @@ const Sidebar: React.FC<{ page: string; setPage: (p: string) => void; open: bool
       {open && <div className="fixed inset-0 z-30 bg-black/50 lg:hidden" onClick={() => setOpen(false)} />}
       <aside className={`fixed z-40 lg:static inset-y-0 left-0 w-64 shrink-0 border-r border-slate-200 dark:border-white/10 bg-white dark:bg-slate-950 flex flex-col transition-transform ${open ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}`}>
         <div className="flex items-center justify-between px-5 h-16 border-b border-slate-200 dark:border-white/10">
-          <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={() => { logout(); navigate('/'); setOpen(false); }}
+            className="flex items-center gap-2 rounded-lg -ml-1 px-1 py-1 hover:bg-slate-100 dark:hover:bg-white/5 transition-colors"
+            aria-label="Back to sign in"
+          >
             <div className="grid h-8 w-8 place-items-center rounded-lg bg-gradient-to-br from-indigo-500 to-cyan-400 text-white"><Activity className="h-4 w-4" /></div>
             <span className="font-bold tracking-tight text-slate-900 dark:text-white">SentinelOps</span>
-          </div>
+          </button>
           <button className="lg:hidden text-slate-400" onClick={() => setOpen(false)}><X className="h-5 w-5" /></button>
         </div>
 
@@ -44,7 +51,7 @@ const Sidebar: React.FC<{ page: string; setPage: (p: string) => void; open: bool
                   const Icon = i.icon;
                   const active = page === i.id;
                   return (
-                    <button key={i.id} onClick={() => { setPage(i.id); setOpen(false); }}
+                    <button key={i.id} onClick={() => { goto(i.id); setOpen(false); }}
                       className={`flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${active ? 'bg-indigo-600 text-white shadow-sm shadow-indigo-600/30' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/5'}`}>
                       <Icon className="h-4 w-4 shrink-0" />{i.label}
                     </button>
@@ -56,7 +63,7 @@ const Sidebar: React.FC<{ page: string; setPage: (p: string) => void; open: bool
         </nav>
 
         <div className="p-3 border-t border-slate-200 dark:border-white/10">
-          <button onClick={logout} className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-rose-50 dark:hover:bg-rose-500/10 hover:text-rose-600">
+          <button onClick={() => { logout(); navigate('/'); }} className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-rose-50 dark:hover:bg-rose-500/10 hover:text-rose-600">
             <LogOut className="h-4 w-4" /> Sign out
           </button>
         </div>

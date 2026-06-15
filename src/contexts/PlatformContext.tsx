@@ -1,4 +1,5 @@
-import React, { createContext, useContext, useState, useEffect, useCallback, useRef } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback, useRef, useMemo } from 'react';
+import { useTheme } from '@/components/theme-provider';
 import {
   organizations as seedOrgs, users as seedUsers, members, genActivity, rules as seedRules,
   notifications as seedNotifs, subscriptions as seedSubs, invoices as seedInvoices, assignments, PLANS,
@@ -52,8 +53,8 @@ const LIVE_SITES = [
 ];
 
 export const PlatformProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const { theme, setTheme } = useTheme();
   const [currentUser, setCurrentUser] = useState<User | null>(null);
-  const [dark, setDark] = useState(true);
   const [orgs, setOrgs] = useState(seedOrgs);
   const [allUsers, setAllUsers] = useState(seedUsers);
   const [activity, setActivity] = useState<ActivityLog[]>(() => genActivity());
@@ -64,11 +65,11 @@ export const PlatformProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   const [liveBrowsing, setLiveBrowsing] = useState<Record<string, { domain: string; cat: string }>>({});
   const tick = useRef(0);
 
-  // theme apply
-  useEffect(() => {
-    const root = document.documentElement;
-    if (dark) root.classList.add('dark'); else root.classList.remove('dark');
-  }, [dark]);
+  const dark = useMemo(() => {
+    if (theme === 'dark') return true;
+    if (theme === 'light') return false;
+    return window.matchMedia('(prefers-color-scheme: dark)').matches;
+  }, [theme]);
 
   // realtime engine: every 3s push activity + update live browsing + maybe alert
   useEffect(() => {
@@ -127,7 +128,9 @@ export const PlatformProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     setCurrentUser(newUser);
   }, []);
 
-  const toggleDark = useCallback(() => setDark((d) => !d), []);
+  const toggleDark = useCallback(() => {
+    setTheme(dark ? 'light' : 'dark');
+  }, [dark, setTheme]);
   const toggleRule = useCallback((id: string) => setRules((p) => p.map((r) => r.id === id ? { ...r, enabled: !r.enabled } : r)), []);
   const addRule = useCallback((r: Omit<Rule, 'id'>) => setRules((p) => [{ ...r, id: `r_${Date.now()}` }, ...p]), []);
   const removeRule = useCallback((id: string) => setRules((p) => p.filter((r) => r.id !== id)), []);

@@ -39,3 +39,40 @@ export const roleLabel: Record<Role, string> = {
   ORG_ADMIN: 'Org Admin',
   ACCOUNTABILITY_PARTNER: 'Accountability Partner',
 };
+
+export const DEFAULT_PAGE = 'dashboard';
+
+const PAGE_PATHS: Record<string, string> = {
+  dashboard: '/dashboard',
+  orgs: '/orgs',
+  billing: '/billing',
+  live: '/live',
+  ai: '/ai',
+  settings: '/settings',
+  users: '/users',
+  rules: '/rules',
+  activity: '/activity',
+  reports: '/reports',
+  extension: '/extension',
+  alerts: '/alerts',
+  notes: '/notes',
+};
+
+export const PORTAL_PATHS = new Set(Object.values(PAGE_PATHS));
+
+export function pageToPath(pageId: string): string {
+  return PAGE_PATHS[pageId] ?? PAGE_PATHS.dashboard;
+}
+
+export function pathToPage(pathname: string): string {
+  const entry = Object.entries(PAGE_PATHS).find(([, path]) => path === pathname);
+  return entry?.[0] ?? DEFAULT_PAGE;
+}
+
+export function isPortalPath(pathname: string): boolean {
+  return PORTAL_PATHS.has(pathname);
+}
+
+export function isPageAllowed(role: Role, pageId: string): boolean {
+  return NAV[role].some((item) => item.id === pageId);
+}

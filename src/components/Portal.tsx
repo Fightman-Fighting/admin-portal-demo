@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { usePlatform } from '@/contexts/PlatformContext';
 import Sidebar from '@/components/layout/Sidebar';
 import Topbar from '@/components/layout/Topbar';
-import { NAV } from '@/lib/nav';
+import { NAV, pageToPath, pathToPage } from '@/lib/nav';
 import SuperAdminDashboard from '@/components/dashboards/SuperAdminDashboard';
 import OrgAdminDashboard from '@/components/dashboards/OrgAdminDashboard';
 import PartnerDashboard from '@/components/dashboards/PartnerDashboard';
@@ -20,11 +21,13 @@ import LiveFeed from '@/components/shared/LiveFeed';
 
 const Portal: React.FC = () => {
   const { currentUser, assignedMembers } = usePlatform();
-  const [page, setPage] = useState('dashboard');
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const location = useLocation();
+  const navigate = useNavigate();
+  const page = pathToPage(location.pathname);
   if (!currentUser) return null;
   const orgId = currentUser.orgId;
-  const goto = (p: string) => setPage(p);
+  const goto = (p: string) => navigate(pageToPath(p));
   const navItem = NAV[currentUser.role].find((n) => n.id === page);
   const title = navItem?.label || 'Dashboard';
 
@@ -56,7 +59,7 @@ const Portal: React.FC = () => {
 
   return (
     <div className="flex min-h-screen bg-slate-50 dark:bg-slate-950">
-      <Sidebar page={page} setPage={setPage} open={sidebarOpen} setOpen={setSidebarOpen} />
+      <Sidebar page={page} goto={goto} open={sidebarOpen} setOpen={setSidebarOpen} />
       <div className="flex-1 flex flex-col min-w-0">
         <Topbar onMenu={() => setSidebarOpen(true)} title={title} />
         <main className="flex-1 p-4 sm:p-6">{render()}</main>
